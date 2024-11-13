@@ -1,7 +1,4 @@
 // src/app/api/mistral/route.js
-import { NextResponse } from 'next/server';
-import axios from 'axios';
-
 export async function POST(req) {
   try {
     const { messages, model } = await req.json();
@@ -15,38 +12,42 @@ export async function POST(req) {
     const requestBody = {
       model: model,
       messages: formattedMessages,
-      max_tokens: 300,
+      max_tokens: 700,
       temperature: 0.7,
     };
 
-    // Log the request being sent
-    console.log('Request Body:', JSON.stringify(requestBody, null, 2));
+    // Fetch from Mistral AI API
+    const apiResponse = await fetch('https://api.mistral.ai/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${process.env.MISTRAL_API_KEY}`,
+      },
+      body: JSON.stringify(requestBody),
+    });
 
-    const response = await axios.post(
-      'https://api.mistral.ai/v1/chat/completions',
-      requestBody,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${process.env.MISTRAL_API_KEY}`,
-        },
-      }
-    );
+    const responseData = await apiResponse.json();
 
-    // Log the response from the API
-    console.log('API Response:', JSON.stringify(response.data, null, 2));
+    if (!apiResponse.ok) {
+      console.error('API Error:', responseData);
+      return new Response(JSON.stringify({ error: responseData }), {
+        status: apiResponse.status,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
 
     // Correctly parse the assistant's reply
-    const assistantReply = response.data.choices[0].message.content;
+    const assistantReply = responseData.choices[0].message.content;
 
-    return NextResponse.json({ reply: assistantReply }, { status: 200 });
+    return new Response(JSON.stringify({ reply: assistantReply }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    });
   } catch (error) {
-    // Log detailed error information
-    console.error('API Error:', error.response ? error.response.data : error.message);
-
-    return NextResponse.json(
-      { error: 'Failed to fetch response from Mistral AI API' },
-      { status: 500 }
+    console.error('Server Error:', error);
+    return new Response(
+      JSON.stringify({ error: 'Failed to fetch response from Mistral AI API' }),
+      { status: 500, headers: { 'Content-Type': 'application/json' } }
     );
   }
 }

@@ -1,33 +1,23 @@
 // src/app/components/ChatBox.js
 'use client';
 
-import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useState } from 'react';
 import styles from './ChatBox.module.css';
+import TypingIndicator from './TypingIndicator'; // Import the TypingIndicator component
 
-// Add at the top, after imports
 const models = [
   { id: 'pixtral-12b-2409', name: 'Pixtral 12B' },
-  { id: 'another-model-id', name: 'Another Model' },
+  { id: 'open-mistral-nemo', name: 'NEMO' },
   // Add more models as needed
 ];
 
-
 const ChatBox = () => {
-  const [isClient, setIsClient] = useState(false);
   const [messages, setMessages] = useState([
     { role: 'assistant', content: 'Hello! How can I assist you today?' },
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [selectedModel, setSelectedModel] = useState(models[0].id);
-
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  if (!isClient) return null;
 
   const handleSend = async () => {
     if (!input.trim()) return;
@@ -39,16 +29,26 @@ const ChatBox = () => {
     setIsLoading(true);
 
     try {
-      const response = await axios.post('/api/mistral', {
-        messages: newMessages,
-        model: selectedModel,
+      const response = await fetch('/api/mistral', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: newMessages,
+          model: selectedModel,
+        }),
       });
-      const assistantReply = response.data.reply;
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      const assistantReply = data.reply;
 
       const assistantMessage = { role: 'assistant', content: assistantReply };
       setMessages((prev) => [...prev, assistantMessage]);
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error in handleSend:', error);
       const errorMessage = { role: 'assistant', content: 'Sorry, something went wrong.' };
       setMessages((prev) => [...prev, errorMessage]);
     } finally {
@@ -73,14 +73,17 @@ const ChatBox = () => {
         </select>
       </div>
       <div className={styles['chat-window']}>
-        {messages.map((msg, idx) => (
-          <div key={idx} className={`${styles.message} ${styles[msg.role]}`}>
+      {messages.map((msg, idx) => (
+          <div
+            key={`${msg.role}-${idx}`}
+            className={`${styles.message} ${styles[msg.role]}`}
+          >
             <span>{msg.content}</span>
           </div>
         ))}
         {isLoading && (
           <div className={`${styles.message} ${styles['assistant']}`}>
-            <span>Typing...</span>
+            <TypingIndicator />
           </div>
         )}
       </div>
@@ -91,8 +94,11 @@ const ChatBox = () => {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+          disabled={isLoading}
         />
-        <button onClick={handleSend}>Send</button>
+        <button onClick={handleSend} disabled={isLoading}>
+          Send
+        </button>
       </div>
     </div>
   );
