@@ -1,4 +1,3 @@
-// src/app/components/TypingIndicator.js
 import styles from './TypingIndicator.module.css';
 
 const TypingIndicator = () => {

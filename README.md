@@ -1,36 +1,83 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Mistral AI Chat Application
+
+This project is a responsive chat application built using **Next.js** and **React**. It interacts with the **Mistral AI API** to provide real-time chat responses.
+
+## Features
+
+- **Real-Time Chat**: Communicate with the Mistral AI API to receive instant responses.
+- **Model Selection**: Choose from different AI models to generate various response types.
+- **Animated Typing Indicator**: An engaging typing animation for better user experience.
+- **Responsive and Adjustable UI**: Resizable chat box with responsive design, allowing it to adapt to different screen sizes.
+
+## Project Structure
+
+├── src │ ├── app │ │ ├── components │ │ │ ├── ChatBox.js # Main chat component │ │ │ ├── TypingIndicator.js # Typing indicator with animation │ │ │ └── ... # Additional components │ │ ├── api │ │ │ └── mistral │ │ │ └── route.js # API route for Mistral AI interactions │ │ ├── globals.css # Global styles │ │ ├── layout.tsx # Layout configuration for Next.js │ │ └── page.tsx # Main page entry for the application ├── .env.local.example # Example environment variable file ├── README.md # Project documentation └── package.json # Project dependencies and scripts
+
+
+## Prerequisites
+
+Ensure you have the following installed:
+
+- **Node.js** (v14 or higher)
+- **npm** or **yarn**
 
 ## Getting Started
 
-First, run the development server:
+1. **Clone the Repository**
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+    ```bash
+    git clone https://github.com/acaen007/MistralChat
+    cd mistral-chat-app
+    ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. **Install Dependencies**
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+    ```bash
+    npm install
+    # or
+    yarn install
+    ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+3. **Set Up Environment Variables**
 
-## Learn More
+    To use the Mistral AI API, you’ll need an API key. **Do not hard-code sensitive information like your API key directly into the code**. Instead, use environment variables to keep it secure.
 
-To learn more about Next.js, take a look at the following resources:
+    - Copy the example environment file and rename it to `.env.local`:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+      ```bash
+      cp .env.local.example .env.local
+      ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+    - Open `.env.local` in a text editor and replace `your_mistral_api_key_here` with your actual **Mistral AI API key**:
 
-## Deploy on Vercel
+      ```plaintext
+      MISTRAL_API_KEY=your_mistral_api_key_here
+      ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+    - **Important**: Ensure `.env.local` is in your `.gitignore` file to avoid accidentally committing your API key to version control.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+4. **Run the Application**
+
+    ```bash
+    npm run dev
+    # or
+    yarn dev
+    ```
+
+    Then, open [http://localhost:3000](http://localhost:3000) in your browser to view the app.
+
+5. **Test the Chat Functionality**
+
+    - Enter messages in the chat box to interact with the Mistral AI API.
+    - Use the dropdown to select different models and see how the responses vary.
+
+
+## Troubleshooting
+
+- **API Key Issues**: Ensure your API key is correct and has the necessary permissions for the Mistral AI endpoints.
+
+## License
+
+This project is licensed under the MIT License.
+
+

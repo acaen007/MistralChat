@@ -1,14 +1,12 @@
-// src/app/components/ChatBox.js
 'use client';
 
 import { useState } from 'react';
 import styles from './ChatBox.module.css';
-import TypingIndicator from './TypingIndicator'; // Import the TypingIndicator component
+import TypingIndicator from './TypingIndicator';
 
 const models = [
   { id: 'pixtral-12b-2409', name: 'Pixtral 12B' },
   { id: 'open-mistral-nemo', name: 'NEMO' },
-  // Add more models as needed
 ];
 
 const ChatBox = () => {
